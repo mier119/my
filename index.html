@@ -574,7 +574,7 @@ window.addEventListener('pageshow', ()=>{
     if (!document.querySelector('.modal-mask.show')) unlockScroll();
 });
 
-/* ---------------- 背景音乐（微信兼容版） ---------------- */
+/* ---------------- 背景音乐 ---------------- */
 const bgmAudio = document.getElementById('bgmAudio');
 const musicBtn = document.getElementById('musicBtn');
 bgmAudio.volume = 0.35;
@@ -603,40 +603,28 @@ function playBgm(){
 }
 
 function pauseBgm(){
-bgmAudio.pause()；
-musicBtn.textContent='♫'；
+    bgmAudio.pause();
+    musicBtn.textContent = '♫';
 }
 
-函数onMusicTap(e){
-if(e){
-e.preventDefault()；
-E.停止传播()；
+function onMusicTap(e){
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
-if(bgmAudio.paused){
-playBgm()；
-}else{
-pauseBgm()；
+    if (bgmAudio.paused){
+        playBgm();
+    } else {
+        pauseBgm();
     }
 }
 
-musicBtn.addEventListener('touchstart'，onMusicTap，{passive:false})；
-musicBtn.addEventListener('click'，onMusicTap)；
+musicBtn.addEventListener('touchstart', onMusicTap, { passive: false });
+musicBtn.addEventListener('click', onMusicTap);
 
-让自动启动=false；
-函数tryAutoStart(e){
-如果(自动启动)返回；
-if(e.target====musicBtn||musicBtn.包含(e.target))返回；
-Autostarted=true；
-playBgm()；
-document.removeEventListener('touchstart'，tryAutoStart)；
-document.removeEventListener('click'，tryAutoStart)；
-}
-document.addEventListener('touchstart'，tryAutoStart，{passive:true})；
-document.addEventListener('click'，tryAutoStart)；
-
-bgmAudio.addEventListener('error'，()=>{
-console.warn(‘BGM加载失败')；
-musicBtn.textContent='♫'；
+bgmAudio.addEventListener('error', ()=>{
+    console.warn('BGM 加载失败');
+    musicBtn.textContent = '♫';
 });
 </script>
 </body>
