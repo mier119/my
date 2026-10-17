@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>江南/凛冬 · 个人主页</title>
+<style>
+    *{
+        margin:0; padding:0; box-sizing:border-box;
+        -webkit-tap-highlight-color: transparent;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    html, body {
+        width:100%;
+        min-height:100%;
+        background:#eaf4ff;
+        overflow-x:hidden;
+        overflow-y:auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: auto;
+    }
+    html.no-scroll, body.no-scroll {
+        overflow:hidden !important;
+        height:100% !important;
+        touch-action:none;
+    }
+    .phone{
+        width:100%; max-width:420px; margin:0 auto;
+        background:#eaf4ff; position:relative;
+        padding-bottom:90px;
+    }
+    .app-nav{
+        background:#eaf4ff; padding:10px 14px;
+        display:flex; align-items:center; justify-content:space-between;
+        position:sticky; top:0; z-index:5;
+    }
+    .app-nav .title{ font-size:16px; font-weight:500; color:#102a43; }
+    .nav-btn{
+        width:34px; height:34px; border-radius:50%; background:#d7ebff;
+        display:flex; align-items:center; justify-content:center;
+        color:#1f4e79; font-size:18px; cursor:pointer; user-select:none;
+    }
+    .nav-group{ display:flex; gap:8px; }
+    .banner{
+        position:relative; width:100%; height:130px;
+        background:#689cd2;
+        background-image: url("https://beeimg.us.ci/temp/6ad18b2c66110.jpg");
+        background-size:cover; background-position:center; overflow:hidden;
+    }
+    .banner-gradient{
+        position:absolute; left:0; right:0; bottom:0; height:70px;
+        background:linear-gradient(180deg, rgba(0,0,0,0) 0%, #eaf4ff 100%);
+        pointer-events:none;
+    }
+    .avatar{
+        position:absolute; left:16px; bottom:8px; z-index:4;
+        width:74px; height:74px; border-radius:50%;
+        box-shadow:0 4px 12px rgba(0,0,0,0.18); overflow:hidden;
+    }
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .profile-badge{
+        position:absolute; right:16px; bottom:12px;
+        background:rgba(255,255,255,0.78); backdrop-filter: blur(8px);
+        padding:7px 16px; border-radius:999px; color:#1f4e79;
+        letter-spacing:2px; font-size:13px; z-index:3;
+    }
+    .side-bar{
+        position:absolute; right:14px; top:50%; transform:translateY(-50%);
+        z-index:4; display:flex; flex-direction:column; gap:10px;
+    }
+    .side-btn{
+        width:44px; height:44px; border-radius:50%;
+        background:rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+        display:flex; align-items:center; justify-content:center;
+        color:#1f4e79; font-size:18px;
+        box-shadow:0 4px 10px rgba(31,78,121,0.12); cursor:pointer; user-select:none;
+    }
+    .user-card{
+        margin:10px 14px; background:#ffffff; border-radius:24px;
+        padding:18px; box-shadow:0 4px 14px rgba(31,78,121,0.07);
+        position:relative;
+    }
+    .user-card::before{
+        content:""; position:absolute; top:14px; right:14px;
+        width:30px; height:30px;
+        border-top:1px solid #b9d5ee; border-right:1px solid #b9d5ee;
+    }
+    .user-name{ display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap; }
+    .user-name h1{ font-size:22px; color:#102a43; }
+    .user-name .en{ font-size:14px; color:#4a6b8a; letter-spacing:2px; font-family:Georgia,serif; }
+    .user-id{ font-size:12px; color:#4a6b8a; margin-top:4px; }
+    .user-desc{ margin-top:10px; font-size:14px; color:#243b53; line-height:1.6; }
+    .status-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+    .status-item{
+        background:#eaf4ff; border-radius:20px; padding:14px;
+        position:relative; cursor:pointer; transition:0.2s;
+    }
+    .status-item:active{ transform:scale(0.97); }
+    .status-item .label{ font-size:12px; color:#4a6b8a; margin-bottom:4px; }
+    .status-item .value{ font-size:15px; color:#102a43; font-weight:600; }
+    .status-item .dot{
+        position:absolute; right:14px; top:14px;
+        width:9px; height:9px; border-radius:50%; background:#5cb85c;
+    }
+    .status-item .arrow{ position:absolute; right:14px; bottom:14px; font-size:14px; color:#4a6b8a; }
+    .data-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 14px 14px; }
+    .data-item{
+        background:#ffffff; border-radius:20px; padding:14px 4px;
+        text-align:center; box-shadow:0 4px 14px rgba(31,78,121,0.06);
+        cursor:pointer; transition:0.2s;
+    }
+    .data-item:active{ transform:scale(0.97); }
+    .data-item .num{ font-size:18px; font-weight:700; color:#102a43; }
+    .data-item .label{ font-size:11px; color:#4a6b8a; margin-top:3px; }
+    .quote{
+        font-family:Georgia,serif; font-style:italic; font-size:24px;
+        color:#243b53; padding-left:14px;
+        border-left:3px solid #9fc5e8; margin:6px 14px 14px;
+    }
+    .func-card{
+        margin:0 14px 14px; background:#ffffff; border-radius:24px;
+        padding:18px; box-shadow:0 4px 14px rgba(31,78,121,0.08);
+        position:relative; overflow:hidden;
+    }
+    .func-card::before{
+        content:""; position:absolute; top:14px; right:14px;
+        width:40px; height:40px;
+        border-top:1px solid #b9d5ee; border-right:1px solid #b9d5ee;
+    }
+    .func-card::after{
+        content:""; position:absolute; bottom:14px; left:14px;
+        width:40px; height:40px;
+        border-bottom:1px solid #b9d5ee; border-left:1px solid #b9d5ee;
+    }
+    .section-head{ display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+    .section-head .num{ font-size:14px; color:#4a6b8a; font-family:Georgia,serif; }
+    .section-head h3{ font-size:16px; color:#102a43; }
+    .section-head .line{ flex:1; height:1px; background:#c9e0f7; }
+    .section-head .tag-deco{
+        font-size:12px; color:#4a6b8a; border:1px solid #9fc5e8;
+        padding:4px 9px; border-radius:999px;
+    }
+    .tags{ display:flex; flex-wrap:wrap; gap:10px; }
+    .tag{
+        border:1px solid #9fc5e8; background:#eaf4ff; border-radius:999px;
+        padding:10px 18px; font-size:14px; color:#1f4e79;
+        cursor:pointer; text-decoration:none; transition:0.2s;
+    }
+    .tag:active{ transform:scale(0.96); }
+    .progress-area{ margin-top:14px; cursor:pointer; }
+    .progress-row{ display:flex; justify-content:space-between; font-size:12px; color:#4a6b8a; }
+    .progress-bar{
+        width:100%; height:7px; background:#d7ebff;
+        border-radius:999px; overflow:hidden; margin-top:8px;
+    }
+    .progress-fill{
+        height:100%; width:65%;
+        background:linear-gradient(90deg,#7fb3e6,#4a90d9);
+        border-radius:999px;
+    }
+    .list{ display:flex; flex-direction:column; gap:10px; }
+    .list-item{
+        background:#eaf4ff; border-radius:18px;
+        padding:14px 16px 14px 38px; color:#243b53;
+        font-size:14px; line-height:1.6; position:relative;
+    }
+    .list-item::before{
+        content:"◆"; position:absolute; left:16px; top:14px;
+        color:#7fa8d1; font-size:10px;
+    }
+    .sub-card{
+        background:#eaf4ff; border-radius:18px; padding:14px;
+        margin-bottom:14px; position:relative; border:1px solid transparent;
+        background-image: linear-gradient(#eaf4ff,#eaf4ff), linear-gradient(135deg,#9fc5e8,#c9e0f7);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+    }
+    .sub-card:last-child{ margin-bottom:0; }
+    .sub-card-title{ font-weight:600; color:#102a43; font-size:15px; margin-bottom:6px; }
+    .sub-card-desc{ font-size:13px; color:#4a6b8a; line-height:1.6; }
+    .split-line{
+        width:100%; height:1px;
+        background:linear-gradient(90deg,transparent,#9fc5e8,transparent);
+        margin:14px 0;
+    }
+    .app-tabbar{
+        position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+        width:100%; max-width:420px;
+        background:rgba(255,255,255,0.92);
+        backdrop-filter: blur(12px);
+        border-top:1px solid #c9e0f7;
+        padding:8px 14px calc(8px + env(safe-area-inset-bottom));
+        display:flex; justify-content:space-around; z-index:10;
+    }
+    .app-tab{
+        flex:1; text-align:center; padding:10px 6px;
+        font-size:13px; color:#4a6b8a; transition:0.2s;
+        cursor:pointer; user-select:none;
+    }
+    .app-tab.active{
+        background:#d7ebff; color:#102a43; font-weight:600;
+        border-bottom:2px solid #4a90d9; border-radius:10px 10px 0 0;
+    }
+    .page{ display:none; }
+    .page.active{ display:block; }
+    .modal-mask{
+        position:fixed; inset:0;
+        background:rgba(16,42,67,0.45); backdrop-filter:blur(4px);
+        z-index:9999; display:none;
+        align-items:center; justify-content:center; padding:20px;
+        overscroll-behavior: contain;
+    }
+    .modal-mask.show{ display:flex; }
+    .modal-box{
+        width:100%; max-width:340px; background:#fff;
+        border-radius:22px; padding:18px; position:relative;
+        max-height:80vh; overflow-y:auto;
+    }
+    .modal-close{
+        position:absolute; top:14px; right:14px;
+        width:30px; height:30px; border-radius:50%;
+        background:#d7ebff; border:none; color:#1f4e79;
+        font-size:18px; cursor:pointer;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .modal-title{ font-size:17px; font-weight:600; color:#102a43; margin-bottom:10px; padding-right:36px; }
+    .modal-text{ font-size:14px; color:#243b53; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="app-nav">
+        <div class="nav-btn" onclick="goBackPage()">‹</div>
+        <div class="title">个人主页</div>
+        <div class="nav-group">
+            <div class="nav-btn" id="musicBtn">♫</div>
+            <div class="nav-btn" onclick="openModal('modal-more')">⋯</div>
+        </div>
+    </div>
+
+    <div class="page active" id="page-home">
+        <div class="banner">
+            <div class="banner-gradient"></div>
+            <div class="avatar">
+                <img src="https://beeimg.us.ci/temp/6ad0c98e60b8d.jpg" alt="头像">
+            </div>
+            <div class="profile-badge">PROFILE</div>
+            <div class="side-bar">
+                <div class="side-btn" onclick="openModal('modal-like')">♥</div>
+                <div class="side-btn" onclick="openModal('modal-collect')">★</div>
+                <div class="side-btn" onclick="openModal('modal-share')">⌲</div>
+            </div>
+        </div>
+
+        <div class="user-card">
+            <div class="user-name">
+                <h1>江南/凛冬</h1>
+                <span class="en">JIANG NAN/LIN DONG</span>
+            </div>
+            <div class="user-id">@短暂的停留也可以变成永恒的 · 个人档案</div>
+            <div class="user-desc">
+                短暂的停留也可以变成永恒的<br>
+                IP属地：江苏。
+            </div>
+
+            <div class="status-grid">
+                <div class="status-item" onclick="openModal('modal-status')">
+                    <div class="label">接单状态</div>
+                    <div class="value">开放中</div>
+                    <div class="dot"></div>
+                    <div class="arrow">›</div>
+                </div>
+                <div class="status-item" onclick="openModal('modal-reply')">
+                    <div class="label">回复速度</div>
+                    <div class="value">12h 内</div>
+                    <div class="arrow">›</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-grid">
+            <div class="data-item" onclick="openModal('modal-order')">
+                <div class="num">312</div>
+                <div class="label">接单数</div>
+            </div>
+            <div class="data-item" onclick="openModal('modal-rate')">
+                <div class="num">94%</div>
+                <div class="label">好评率</div>
+            </div>
+            <div class="data-item" onclick="openModal('modal-progress')">
+                <div class="num">65%</div>
+                <div class="label">排单度</div>
+            </div>
+        </div>
+
+        <div class="quote">Stay with me.</div>
+
+        <div class="func-card">
+            <div class="section-head">
+                <span class="num">01</span>
+                <h3>标签信息</h3>
+                <span class="tag-deco">TAGS</span>
+                <div class="line"></div>
+            </div>
+            <div class="tags">
+                <span class="tag" onclick="openModal('modal-tag-17')">17</span>
+                <span class="tag" onclick="openModal('modal-tag-shuang')">双</span>
+                <span class="tag" onclick="openModal('modal-tag-guide')">引导系</span>
+                <span class="tag" onclick="openModal('modal-tag-infp')">INFP</span>
+            </div>
+
+            <div class="progress-area" onclick="openModal('modal-progress')">
+                <div class="progress-row">
+                    <span>排单进度</span>
+                    <span>65%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="page-skill">
+        <div class="func-card" style="margin-top:10px;">
+            <div class="section-head">
+                <span class="num">02</span>
+                <h3>可接技能</h3>
+                <span class="tag-deco">SKILLS</span>
+                <div class="line"></div>
+            </div>
+            <div class="tags">
+                <a class="tag" href="https://www.kdocs.cn/l/cckaCKcAD3Nk" target="_blank" rel="noopener">病恋</a>
+                <a class="tag" href="https://www.kdocs.cn/l/cfg1IlIfyTH5" target="_blank" rel="noopener">虚恋</a>
+                <a class="tag" href="https://www.kdocs.cn/l/ctoHJKhR8XBM" target="_blank" rel="noopener">虐恋</a>
+                <a class="tag" href="https://www.kdocs.cn/l/cbL6IGDg2rx4" target="_blank" rel="noopener">代跑</a>
+                <a class="tag" href="https://www.kdocs.cn/l/cnG62KLEvQ0f" target="_blank" rel="noopener">普陪</a>
+                <a class="tag" href="https://www.kdocs.cn/l/cfJp16tHPwXH" target="_blank" rel="noopener">弹琴</a>
+            </div>
+
+            <div class="split-line"></div>
+
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 病恋风格</div>
+                <div class="sub-card-desc">温病 低无 疯病</div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 虐恋风格</div>
+                <div class="sub-card-desc">非典型 低无 剖析</div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 虚恋风格</div>
+                <div class="sub-card-desc">高恋暧昧引导剖析</div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 代跑相关</div>
+                <div class="sub-card-desc">
+                    全图蜡烛 20<br>
+                    全图金人 25<br>
+                    挂饭 10<br>
+                    做任务 1天/4r<br>
+                    带人一人 +6r<br>
+                    目前只接安官及 iOS
+                </div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 普陪风格</div>
+                <div class="sub-card-desc">
+                    我的风格多为不固定 / 随机<br>
+                    主风格：温柔 好相处<br>
+                    副风格：雷霆 抽象
+                </div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-card-title">▸ 弹琴</div>
+                <div class="sub-card-desc">游戏内弹琴演奏，可点歌，适配多种曲风。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="page-notice">
+        <div class="func-card" style="margin-top:10px;">
+            <div class="section-head">
+                <span class="num">03</span>
+                <h3>须知</h3>
+                <span class="tag-deco">NOTICE</span>
+                <div class="line"></div>
+            </div>
+
+            <div class="list">
+                <div class="list-item">下单默认个人主风格，若结束后以不喜本人风格的理由退单 / 客诉，概不接受</div>
+                <div class="list-item">单内话术可能作为展示，不会泄露个人隐私，介意记得提前说明</div>
+                <div class="list-item">下单默认提前在小群互相告知喜雷，不接受暗雷客诉，无告知踩雷默认无责</div>
+                <div class="list-item">如有心理疾病请提前说明，无提前说明一律按正常接单，出现发病症状不承担任何责任</div>
+                <div class="list-item">下单默认阅读完整须知，出现没有阅读须知导致的问题，本人概不负责</div>
+                <div class="list-item">期待与你共同度过时光</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-tabbar">
+        <div class="app-tab active" data-page="page-home" onclick="switchTab('page-home')">主页</div>
+        <div class="app-tab" data-page="page-skill" onclick="switchTab('page-skill')">技能</div>
+        <div class="app-tab" data-page="page-notice" onclick="switchTab('page-notice')">须知</div>
+    </div>
+</div>
+
+<div class="modal-mask" id="modal-like">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-like')">×</button>
+        <div class="modal-title">喜欢</div>
+        <div class="modal-text">感谢你的喜欢！</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-collect">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-collect')">×</button>
+        <div class="modal-title">收藏</div>
+        <div class="modal-text">已收藏，感谢支持。</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-share">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-share')">×</button>
+        <div class="modal-title">分享</div>
+        <div class="modal-text">复制链接分享主页。</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-status">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-status')">×</button>
+        <div class="modal-title">接单状态</div>
+        <div class="modal-text">目前接单开放，可以私信咨询。</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-reply">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-reply')">×</button>
+        <div class="modal-title">回复速度</div>
+        <div class="modal-text">一般 12 小时内回复，忙时会延后。</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-order">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-order')">×</button>
+        <div class="modal-title">接单数</div>
+        <div class="modal-text">累计接单数：312 单</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-rate">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-rate')">×</button>
+        <div class="modal-title">好评率</div>
+        <div class="modal-text">好评率 94%</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-progress">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-progress')">×</button>
+        <div class="modal-title">排单度</div>
+        <div class="modal-text">当前排单 65%，可预约排单。</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-tag-17">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-tag-17')">×</button>
+        <div class="modal-title">年龄</div>
+        <div class="modal-text">设定年龄：17 岁</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-tag-shuang">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-tag-shuang')">×</button>
+        <div class="modal-title">属性</div>
+        <div class="modal-text">属性：双</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-tag-guide">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-tag-guide')">×</button>
+        <div class="modal-title">引导系</div>
+        <div class="modal-text">人设风格：引导系演绎</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-tag-infp">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-tag-infp')">×</button>
+        <div class="modal-title">INFP</div>
+        <div class="modal-text">MBTI：INFP</div>
+    </div>
+</div>
+<div class="modal-mask" id="modal-more">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-more')">×</button>
+        <div class="modal-title">更多</div>
+        <div class="modal-text">更多功能开发中</div>
+    </div>
+</div>
+
+<audio id="bgmAudio" loop preload="auto" playsinline webkit-playsinline>
+    <source src="https://mp3tourl.com/audio/1792135503272-e1e6a922-9e7c-4e7b-bda6-c439faedbeeb.mp3" type="audio/mpeg">
+    你的浏览器不支持音频播放。
+</audio>
+
+<script>
+/* ---------------- 滚动锁 ---------------- */
+function lockScroll(){
+    document.documentElement.classList.add('no-scroll');
+    document.body.classList.add('no-scroll');
+}
+function unlockScroll(){
+    document.documentElement.classList.remove('no-scroll');
+    document.body.classList.remove('no-scroll');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+}
+
+/* ---------------- 页面切换 ---------------- */
+let pageStack = ['page-home'];
+
+function renderPage(pageId){
+    document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id === pageId));
+    document.querySelectorAll('.app-tab').forEach(t=>t.classList.toggle('active', t.dataset.page === pageId));
+    unlockScroll();
+    window.scrollTo(0, 0);
+}
+
+function switchTab(pageId){
+    const idx = pageStack.indexOf(pageId);
+    if (idx > -1) {
+        pageStack.length = idx + 1;
+    } else {
+        pageStack.push(pageId);
+    }
+    renderPage(pageId);
+}
+
+function goBackPage(){
+    if (pageStack.length > 1) {
+        pageStack.pop();
+        renderPage(pageStack[pageStack.length - 1]);
+    }
+}
+
+/* ---------------- 弹窗 ---------------- */
+function openModal(id){
+    const mask = document.getElementById(id);
+    if (!mask) return;
+    mask.classList.add('show');
+    lockScroll();
+}
+
+function closeModal(id){
+    const mask = document.getElementById(id);
+    if (mask) mask.classList.remove('show');
+    if (!document.querySelector('.modal-mask.show')) {
+        unlockScroll();
+    }
+}
+
+document.querySelectorAll('.modal-mask').forEach(mask=>{
+    mask.addEventListener('click', e=>{
+        if (e.target === mask) closeModal(mask.id);
+    });
+});
+
+document.addEventListener('visibilitychange', ()=>{
+    if (!document.hidden && !document.querySelector('.modal-mask.show')) {
+        unlockScroll();
+    }
+});
+window.addEventListener('pageshow', ()=>{
+    if (!document.querySelector('.modal-mask.show')) unlockScroll();
+});
+
+/* ---------------- 背景音乐（微信兼容版） ---------------- */
+const bgmAudio = document.getElementById('bgmAudio');
+const musicBtn = document.getElementById('musicBtn');
+bgmAudio.volume = 0.35;
+
+function wechatLoad(){
+    try { bgmAudio.load(); } catch(e){}
+}
+if (typeof WeixinJSBridge === 'undefined'){
+    document.addEventListener('WeixinJSBridgeReady', wechatLoad, false);
+} else {
+    wechatLoad();
+}
+
+function playBgm(){
+    const p = bgmAudio.play();
+    if (p && typeof p.then === 'function'){
+        p.then(()=>{ 
+            musicBtn.textContent = '♪'; 
+        }).catch(err=>{
+            console.warn('播放失败：', err);
+            musicBtn.textContent = '♫';
+        });
+    } else {
+        musicBtn.textContent = '♪';
+    }
+}
+
+function pauseBgm(){
+bgmAudio.pause()；
+musicBtn.textContent='♫'；
+}
+
+函数onMusicTap(e){
+if(e){
+e.preventDefault()；
+E.停止传播()；
+    }
+if(bgmAudio.paused){
+playBgm()；
+}else{
+pauseBgm()；
+    }
+}
+
+musicBtn.addEventListener('touchstart'，onMusicTap，{passive:false})；
+musicBtn.addEventListener('click'，onMusicTap)；
+
+让自动启动=false；
+函数tryAutoStart(e){
+如果(自动启动)返回；
+if(e.target====musicBtn||musicBtn.包含(e.target))返回；
+Autostarted=true；
+playBgm()；
+document.removeEventListener('touchstart'，tryAutoStart)；
+document.removeEventListener('click'，tryAutoStart)；
+}
+document.addEventListener('touchstart'，tryAutoStart，{passive:true})；
+document.addEventListener('click'，tryAutoStart)；
+
+bgmAudio.addEventListener('error'，()=>{
+console.warn(‘BGM加载失败')；
+musicBtn.textContent='♫'；
+});
+</script>
+</body>
+</html>
